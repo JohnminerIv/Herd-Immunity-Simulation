@@ -14,3 +14,10 @@ def test_virus_instantiation():
     assert virus.name == "HIV"
     assert virus.repro_rate == 0.8
     assert virus.mortality_rate == 0.3
+
+
+def test_tuberculosis_instantiation():
+    virus = Virus("Tuberculosis", 0.67, 0.55)
+    assert virus.name == "tuberculosis"
+    assert virus.repro_rate == 0.67
+    assert virus.mortality_rate == 0.55
