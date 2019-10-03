@@ -31,9 +31,11 @@ class Person(object):
             life_force = random.random()
             if life_force <= self.infection.mortality_rate:
                 self.is_alive = False
+                self.infection = None
                 return False
             else:
                 self.is_vaccinated = True
+                self.infection = None
                 return True
 
 

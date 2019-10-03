@@ -48,8 +48,10 @@ class Simulation(object):
         self.current_infected = 0 # Int
         self.vacc_percentage = vacc_percentage # float between 0 and 1
         self.total_dead = 0 # Int
+        self.virus_name = virus.name
         self.file_name = "{}_simulation_pop_{}_vp_{}_infected_{}.txt".format(
             virus_name, pop_size, vacc_percentage, initial_infected)
+        self.logger = Logger(self.file_name)
         self.newly_infected = []
 
     def _create_population(self, initial_infected):
@@ -73,16 +75,15 @@ class Simulation(object):
         total_non_affected = initial_infected + math.floor(self.vacc_percentage * self.pop_size)
         people_list = []
         for number in range(self.pop_size):
-            if number <= initial_infected:
+            if number < initial_infected:
                 person = Person(number, False, self.virus)
                 self.current_infected += 1
                 self.total_infected += 1
-            elif number <= total_non_affected:
+            elif number < total_non_affected:
                 person = Person(number, True)
             else:
                 person = Person(number, False)
             people_list.append(person)
-            print("person built")
         return people_list
 
     def _simulation_should_continue(self):
@@ -113,13 +114,13 @@ class Simulation(object):
         time_step_counter = 0
         should_continue = True
         """JOHN NOTE LOGGER WRITE METADATA"""
+        self.logger.write_metadata(self.pop_size, self.vacc_percentage, self.virus_name, self.virus.mortality_rate, self.virus.repro_rate)
         self.population = self._create_population(self.initial_infected)
 
         while should_continue:
         # TODO: for every iteration of this loop, call self.time_step() to compute another
         # round of this simulation.
             if self._simulation_should_continue() is True:
-                print(str(time_step_counter))
                 self.time_step()
                 time_step_counter +=1
             else:
@@ -144,28 +145,23 @@ class Simulation(object):
             '''
         """JOHN NOTE LOGGER LOG INFECTION SURVIVAL"""
         """JOHN NOTE SELF._infect_newly_infected"""
-        # TODO: Finish this method.
-        non_dead_people = []
-        non_dead_infected = []
         for person in self.population:
             if person.is_alive is True:
-                print("alive person")
-                non_dead_people.append(person)
                 if person.infection == self.virus:
-                    print("alive infected")
-                    non_dead_infected.append(person)
-
-        for infected in non_dead_infected:
-            for people in range(100):
-                random_person = random.choice(non_dead_people)
-                print(random_person._id)
-                self.interaction(infected, random_person)
-        for infected in non_dead_infected:
-            survived = infected.did_survive_infection()
-            print(infected._id)
-            if survived is False:
-                self.total_dead +=1
+                    interactions = 0
+                    while interactions <= 100:
+                        random_person = random.choice(self.population)
+                        if random_person.is_alive is True:
+                            self.interaction(person, random_person)
+                            interactions += 1
+                    survived = person.did_survive_infection()
+                    if survived is False:
+                        self.logger.log_infection_survival(person, True)
+                        self.total_dead += 1
+                    else:
+                        self.logger.log_infection_survival(person, False)
         self.current_infected = 0
+
         self._infect_newly_infected()
 
     def interaction(self, person, random_person):
@@ -197,16 +193,20 @@ class Simulation(object):
         if random_person.is_vaccinated is True:
             """JOHN NOTE LOGGER LOG INTERACTION"""
             print(f"This person {random_person._id} is vaccinated")
+            self.logger.log_interaction(person, random_person, None, True, None)
         elif random_person.infection is not None:
             """JOHN NOTE LOGGER LOG INTERACTION"""
             print(f"This person {random_person._id} is already infected")
+            self.logger.log_interaction(person, random_person, True, None, None)
         else:
             if random.random() <= self.virus.repro_rate:
                 self.newly_infected.append(random_person._id)
                 """JOHN NOTE LOGGER LOG INTERACTION"""
                 print(f"This person {random_person._id} became infected")
+                self.logger.log_interaction(person, random_person, None, None, True)
             else:
                 """JOHN NOTE LOGGER LOG INTERACTION"""
+                self.logger.log_interaction(person, random_person)
 
     def _infect_newly_infected(self):
         ''' This method should iterate through the list of ._id stored in self.newly_infected
