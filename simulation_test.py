@@ -11,6 +11,7 @@ class simulation_Tests(unittest.TestCase):
         assert _sim.virus == _virus
         assert _sim.pop_size == 100
         assert _sim.total_dead == 0
+
     def test_create_population(self):
         _virus = virus.Virus('Virus', 0.5, 0.5)
         _sim = simulation.Simulation(100, 0.5, _virus, 10)
