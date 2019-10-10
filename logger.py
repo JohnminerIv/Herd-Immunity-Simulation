@@ -24,7 +24,7 @@ class Logger(object):
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
         file = open(self.file_name, 'w+')
-        file.write(str(pop_size)+"\t"+str(vacc_percentage)+"\t"+virus_name+"\t"+str(mortality_rate)+"\t"+str(basic_repro_num)+"\n")
+        file.write(f'''{str(pop_size)}\t{str(vacc_percentage)}\t{virus_name}\t{str(mortality_rate)}\t{str(basic_repro_num)}\n''')
         file.close()
         pass
 

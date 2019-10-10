@@ -18,6 +18,20 @@ def test_virus_instantiation():
 
 def test_tuberculosis_instantiation():
     virus = Virus("Tuberculosis", 0.67, 0.55)
-    assert virus.name == "tuberculosis"
+    assert virus.name == "Tuberculosis"
     assert virus.repro_rate == 0.67
     assert virus.mortality_rate == 0.55
+
+
+def test_rotavirus_instantiation():
+    virus = Virus("Rotavirus", 1.6, 0)
+    assert virus.name == "Rotavirus"
+    assert virus.repro_rate == 1.6
+    assert virus.mortality_rate == 0
+
+
+def test_whooping_cough_instantiation():
+    virus = Virus("Whooping Cough", 1.45, 0.05)
+    assert virus.name == "Whooping Cough"
+    assert virus.repro_rate == 1.45
+    assert virus.mortality_rate == 0.05

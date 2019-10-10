@@ -32,6 +32,7 @@ class Person(object):
             if life_force <= self.infection.mortality_rate:
                 self.is_alive = False
                 self.infection = None
+                self.is_vaccinated = False
                 return False
             else:
                 self.is_vaccinated = True
@@ -53,6 +54,10 @@ def test_vacc_person_instantiation():
 
 def test_not_vacc_person_instantiation():
     person = Person(2, False)
+    assert person._id == 2
+    assert person.is_alive is True
+    assert person.is_vaccinated is False
+    assert person.infection is None
     # TODO: complete your own assert statements that test
     # the values at each attribute
     # assert ...
@@ -67,6 +72,10 @@ def test_sick_person_instantiation():
     # TODO: complete your own assert statements that test
     # the values at each attribute
     # assert ...
+    assert person._id == 3
+    assert person.is_alive is True
+    assert person.is_vaccinated is False
+    assert person.infection is virus
     pass
 
 
@@ -80,13 +89,84 @@ def test_did_survive_infection():
     survived = person.did_survive_infection()
     # Check if the Person survived or not
     if survived:
+        assert person._id == 4
         assert person.is_alive is True
+        assert person.is_vaccinated is True
+        assert person.infection is None
         # TODO: Write your own assert statements that test
         # the values of each attribute for a Person who survived
         # assert ...
     else:
         assert person.is_alive is False
+        assert person._id == 4
+        assert person.is_vaccinated is False
+        assert person.infection is None
         # TODO: Write your own assert statements that test
         # the values of each attribute for a Person who did not survive
         # assert ...
         pass
+
+
+def test_all_input():
+    ''' Generates a lot of completely random people and tests every possible
+combination. I think that this should test every case my program will run into.
+    '''
+    viruses = []
+    people = []
+    for number in range(100000):
+        virus = Virus(str(number), random.random(), random.random())
+        viruses.append(virus)
+    for people in range(100000):
+        is_vacc = random.choice([True, False])
+        if is_vacc is True:
+            person = Person(people, is_vacc)
+        if is_vacc is False:
+            person = Person(people, is_vacc, viruses[people])
+        if person.infection is not None:
+            survived = person.did_survive_infection()
+            # Check if the Person survived or not
+            if survived:
+                assert person._id == people
+                assert person.is_alive is True
+                assert person.is_vaccinated is True
+                assert person.infection is None
+                # TODO: Write your own assert statements that test
+                # the values of each attribute for a Person who survived
+                # assert ...
+            else:
+                assert person.is_alive is False
+                assert person._id == people
+                assert person.is_vaccinated is False
+                assert person.infection is None
+        else:
+            assert person._id == people
+            assert person.is_alive is True
+            assert person.is_vaccinated is True
+            assert person.infection is None
+
+
+def test_bad_instantiation():
+    virus = Virus('deadly', 1, 1)
+    person = Person(5, True, virus)
+    survived = person.did_survive_infection()
+    if survived:
+        assert person._id == 5
+        assert person.is_alive is True
+        assert person.is_vaccinated is True
+        assert person.infection is None
+
+    else:
+        assert person.is_alive is False
+        assert person._id == 5
+        assert person.is_vaccinated is False
+        assert person.infection is None
+
+
+def test_dead_person_can_climb_tree():
+    virus = Virus('deadly', 1, 1)
+    person = Person(6, False, virus)
+    survived = person.did_survive_infection()
+    if survived is not True:
+        person.can_climb_tree = True
+        assert person.is_alive is False
+        assert person.can_climb_tree is True
