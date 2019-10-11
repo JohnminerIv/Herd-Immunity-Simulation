@@ -1,0 +1,9 @@
+1. What were the inputs you gave the simulation? (Population size, percent vaccinated, virus name, mortality rate,  reproductive rate)
+Name="Tuberculosis" repro_rate=0.67 mortality_rate=0.55 pop_size=10000 persent_vaccinated=0.95 initial_infected=10
+"Tuberculosis" 0.67 0.55 10000 0.95 10
+1. What percentage of the population became infected at some point before the virus burned out?
+0.048 percent became infected before the virus burned out.
+1.  What percentage of the population died from the virus?
+0.0276 percent of the whole population died
+1.  Out of all interactions sick individuals had during the entire simulation, how many total interactions did we see where a vaccination saved a person from potentially becoming infected?
+There were 47204 times people were saved from being infected by being vaccinated.

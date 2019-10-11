@@ -72,7 +72,14 @@ class Logger(object):
         else:
             file.write(f"{person._id} became immune to the infection \n")
         file.close()
-        pass
+
+    def write_final_results(self, time_count, total_dead, total_infected, save_by_vaccination):
+        file = open(self.file_name, 'a')
+
+        file.write(f"After {time_count} turns,\nThere are {total_dead} people dead\nAnd there were {total_infected} people infected during the course of the simulation\nThere were also {save_by_vaccination} times people were saved by being vaccinated.")
+
+        file.close()
+
 
     def log_time_step(self, time_step_number):
         ''' STRETCH CHALLENGE DETAILS:

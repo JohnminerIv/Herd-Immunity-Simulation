@@ -47,6 +47,7 @@ class Simulation(object):
         self.total_infected = 0 # Int
         self.current_infected = 0 # Int
         self.vacc_percentage = vacc_percentage # float between 0 and 1
+        self.save_by_vaccination = 0
         self.total_dead = 0 # Int
         self.virus_name = virus.name
 
@@ -126,6 +127,7 @@ class Simulation(object):
                 time_step_counter +=1
             else:
                 break
+        self.logger.write_final_results(time_step_counter, self.total_dead, self.total_infected, self.save_by_vaccination)
         print(f'''The simulation has ended after {time_step_counter} turns.
 The starting pop was {self.pop_size}.
 {self.total_dead} people died.
@@ -195,6 +197,7 @@ The starting pop was {self.pop_size}.
             """JOHN NOTE LOGGER LOG INTERACTION"""
             # print(f"This person {random_person._id} is vaccinated")
             self.logger.log_interaction(person, random_person, None, True, None)
+            self.save_by_vaccination += 1
         elif random_person.infection is not None:
             """JOHN NOTE LOGGER LOG INTERACTION"""
             # print(f"This person {random_person._id} is already infected")
